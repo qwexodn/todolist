@@ -1,19 +1,31 @@
 <template>
     <div class='haeder'>
         <div class='title'>todolist</div>
-        <div class="datepick"><i class="far fa-calendar-alt"></i></div>
     </div>
 </template>
 
 <script>
-    export default {
+    import {lpad} from '../modules/strPad.ts';
 
+    let date = new Date();
+     
+    export default {
+        components:{
+        },
+        data(){
+            return{
+            }
+        },
+        methods:{
+            
+        }
     }
 </script>
 
+
+
 <style lang="scss" scoped>
-@import '../../sass/common.scss';
-@import url('https://fonts.googleapis.com/css?family=Akronim|Nanum+Gothic');
+@import "../../sass/_variables.scss";
 
 .haeder{
     position: sticky;
@@ -22,7 +34,7 @@
     height:50px;
     box-shadow:0 -5px 20px 5px rgba(0, 0, 0, 0.3);
     text-align:center;
-    font-family: 'Akronim', 'Nanum Gothic', sans-serif;
+    font-family: 'Nanum Gothic', sans-serif;
     
     div{
         position: absolute;
@@ -34,9 +46,9 @@
         left:50%;
         top:50%;
         transform: translate(-50%, -50%);
-    }
-    .datepick{
-
+        font-weight: 900;
+        font-size:20px;
+        color:$indigo;
     }
 }
 </style>
