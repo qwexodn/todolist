@@ -10,7 +10,10 @@
                 </div>
                 <div class='input-case'>
                     <label for="title">text</label>
-                    <textarea class='todolist-text' name="" id="" cols="30" rows="10" @focus="textFocus()" @blur="textFocusout()"></textarea>
+                    <textarea class='todolist-text' name="" @focus="textFocus()" @blur="textFocusout()" @input="textInput()"></textarea>
+                </div>
+                <div class='input-cnt'>
+                    <span>{{ inputCnt }}</span>/<span>{{ inputMaxCnt }}</span><span class='small'>byte</span>
                 </div>
             </div>
         </div>
@@ -18,9 +21,16 @@
 </template>
 
 <script>
-
+import { toByte } from "../modules/valueCnt.ts";
 
 export default {
+    data(){
+        return{
+            inputCnt:0,
+            inputMaxCnt:200,
+            inputMaxRows:9,
+        }
+    },
     mounted(){
         window.title = document.querySelector('input.todolist-title');
         window.titleParent = title.parentNode;
@@ -32,18 +42,34 @@ export default {
     },
     methods:{
         titleFocus:()=>{
-            window.titleLabel.classList.add('hidden');
+            titleLabel.classList.add('hidden');
         },
         titleFocusout:()=>{
-            if(window.title.value.length > 0)  return;
-            window.titleLabel.classList.remove('hidden');
+            if(title.value.length > 0)  return;
+            titleLabel.classList.remove('hidden');
         },
         textFocus:()=>{
-            window.textLabel.classList.add('hidden');
+            textLabel.classList.add('hidden');
         },
         textFocusout:()=>{
-            if(window.text.innerHTML.length > 0)  return;
-            window.textLabel.classList.remove('hidden');
+            if(text.value.length > 0)  return;
+            textLabel.classList.remove('hidden');
+        },
+        textInput(){
+            let event = window.event;
+            let obj = event.target;
+            let value = obj.value;
+
+            let rows = value.split('\n').length;
+
+            
+            this.inputCnt = toByte(obj.value);
+
+            if(rows > this.inputMaxRows || this.inputCnt > this.inputMaxCnt){
+                obj.value = value.substr(0, value.length-1);
+                this.inputCnt = toByte(obj.value);
+            }
+
         },
     }
 }
@@ -61,6 +87,9 @@ input, textarea{
 
 .hidden{
     visibility: hidden;
+}
+.small{
+    font-size:12px;
 }
 
 .con-name{
@@ -95,7 +124,7 @@ input, textarea{
     width:55px;
     height:55px;
     background-color:#EAF2F8;
-    position:absolute;
+    position:fixed;
     right:10%;
     bottom:7%;
     box-shadow: 2px 2px 5px -1px #333;
@@ -110,7 +139,7 @@ input, textarea{
 
 
 .todolist-edit{
-    position:absolute;
+    position:fixed;
     bottom:-10px;
     left:50%;
     transform:translate(-50%, 0%);
@@ -125,11 +154,13 @@ input, textarea{
         width: 400px;
         height:370px;
         margin: 15px 50px;
+        font-family: sans-serif;
 
         textarea, input[type=text]{
             border:none;
             outline:none;
             color:#666;
+            font-size:15px;
         }
 
         .todolist-title{
@@ -142,6 +173,12 @@ input, textarea{
             height:150px;
             overflow: hidden;
             resize: none;
+        }
+
+        .input-cnt{
+            text-align:right;
+            font-size:14px;
+            color:#797979;
         }
     }
 }

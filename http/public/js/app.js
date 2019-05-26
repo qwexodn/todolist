@@ -1763,6 +1763,7 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modules_valueCnt_ts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../modules/valueCnt.ts */ "./resources/js/modules/valueCnt.ts");
 //
 //
 //
@@ -1782,7 +1783,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      inputCnt: 0,
+      inputMaxCnt: 200,
+      inputMaxRows: 9
+    };
+  },
   mounted: function mounted() {
     window.title = document.querySelector('input.todolist-title');
     window.titleParent = title.parentNode;
@@ -1793,18 +1805,30 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     titleFocus: function titleFocus() {
-      window.titleLabel.classList.add('hidden');
+      titleLabel.classList.add('hidden');
     },
     titleFocusout: function titleFocusout() {
-      if (window.title.value.length > 0) return;
-      window.titleLabel.classList.remove('hidden');
+      if (title.value.length > 0) return;
+      titleLabel.classList.remove('hidden');
     },
     textFocus: function textFocus() {
-      window.textLabel.classList.add('hidden');
+      textLabel.classList.add('hidden');
     },
     textFocusout: function textFocusout() {
-      if (window.text.innerHTML.length > 0) return;
-      window.textLabel.classList.remove('hidden');
+      if (text.value.length > 0) return;
+      textLabel.classList.remove('hidden');
+    },
+    textInput: function textInput() {
+      var event = window.event;
+      var obj = event.target;
+      var value = obj.value;
+      var rows = value.split('\n').length;
+      this.inputCnt = Object(_modules_valueCnt_ts__WEBPACK_IMPORTED_MODULE_0__["toByte"])(obj.value);
+
+      if (rows > this.inputMaxRows || this.inputCnt > this.inputMaxCnt) {
+        obj.value = value.substr(0, value.length - 1);
+        this.inputCnt = Object(_modules_valueCnt_ts__WEBPACK_IMPORTED_MODULE_0__["toByte"])(obj.value);
+      }
     }
   }
 });
@@ -6370,7 +6394,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "input[data-v-0c26b8aa], textarea[data-v-0c26b8aa] {\n  display: block;\n}\n.button[data-v-0c26b8aa] {\n  cursor: pointer;\n}\n.hidden[data-v-0c26b8aa] {\n  visibility: hidden;\n}\n.con-name[data-v-0c26b8aa] {\n  text-transform: uppercase;\n  font-family: \"Nanum Gothic\", sans-serif;\n  font-size: 13px;\n  font-weight: 900;\n  color: rgba(0, 0, 0, 0.5);\n}\n.input-case[data-v-0c26b8aa] {\n  position: relative;\n  padding: 5px 10px;\n  box-sizing: border-box;\n  box-shadow: 0 0px 3px 1px #ccc;\n  margin: 5px 0;\n  border-radius: 0.5em;\n}\n.input-case label[data-v-0c26b8aa] {\n  position: absolute;\n  left: 10px;\n  top: 8px;\n  text-transform: uppercase;\n  color: rgba(0, 0, 0, 0.3);\n  font-size: 15px;\n}\n.action-btn[data-v-0c26b8aa] {\n  border-radius: 50%;\n  width: 55px;\n  height: 55px;\n  background-color: #EAF2F8;\n  position: absolute;\n  right: 10%;\n  bottom: 7%;\n  box-shadow: 2px 2px 5px -1px #333;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 22px;\n  color: rgba(0, 0, 0, 0.6);\n}\n.todolist-edit[data-v-0c26b8aa] {\n  position: absolute;\n  bottom: -10px;\n  left: 50%;\n  -webkit-transform: translate(-50%, 0%);\n          transform: translate(-50%, 0%);\n  width: 500px;\n  height: 400px;\n  background-color: white;\n  border-radius: 0.5em;\n  box-shadow: 0px 0px 5px 0.2px #999;\n}\n.todolist-edit .edit-container[data-v-0c26b8aa] {\n  width: 400px;\n  height: 370px;\n  margin: 15px 50px;\n}\n.todolist-edit .edit-container textarea[data-v-0c26b8aa], .todolist-edit .edit-container input[type=text][data-v-0c26b8aa] {\n  border: none;\n  outline: none;\n  color: #666;\n}\n.todolist-edit .edit-container .todolist-title[data-v-0c26b8aa] {\n  width: 100%;\n  height: 20px;\n}\n.todolist-edit .edit-container .todolist-text[data-v-0c26b8aa] {\n  width: 100%;\n  height: 150px;\n  overflow: hidden;\n  resize: none;\n}", ""]);
+exports.push([module.i, "input[data-v-0c26b8aa], textarea[data-v-0c26b8aa] {\n  display: block;\n}\n.button[data-v-0c26b8aa] {\n  cursor: pointer;\n}\n.hidden[data-v-0c26b8aa] {\n  visibility: hidden;\n}\n.small[data-v-0c26b8aa] {\n  font-size: 12px;\n}\n.con-name[data-v-0c26b8aa] {\n  text-transform: uppercase;\n  font-family: \"Nanum Gothic\", sans-serif;\n  font-size: 13px;\n  font-weight: 900;\n  color: rgba(0, 0, 0, 0.5);\n}\n.input-case[data-v-0c26b8aa] {\n  position: relative;\n  padding: 5px 10px;\n  box-sizing: border-box;\n  box-shadow: 0 0px 3px 1px #ccc;\n  margin: 5px 0;\n  border-radius: 0.5em;\n}\n.input-case label[data-v-0c26b8aa] {\n  position: absolute;\n  left: 10px;\n  top: 8px;\n  text-transform: uppercase;\n  color: rgba(0, 0, 0, 0.3);\n  font-size: 15px;\n}\n.action-btn[data-v-0c26b8aa] {\n  border-radius: 50%;\n  width: 55px;\n  height: 55px;\n  background-color: #EAF2F8;\n  position: fixed;\n  right: 10%;\n  bottom: 7%;\n  box-shadow: 2px 2px 5px -1px #333;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 22px;\n  color: rgba(0, 0, 0, 0.6);\n}\n.todolist-edit[data-v-0c26b8aa] {\n  position: fixed;\n  bottom: -10px;\n  left: 50%;\n  -webkit-transform: translate(-50%, 0%);\n          transform: translate(-50%, 0%);\n  width: 500px;\n  height: 400px;\n  background-color: white;\n  border-radius: 0.5em;\n  box-shadow: 0px 0px 5px 0.2px #999;\n}\n.todolist-edit .edit-container[data-v-0c26b8aa] {\n  width: 400px;\n  height: 370px;\n  margin: 15px 50px;\n  font-family: sans-serif;\n}\n.todolist-edit .edit-container textarea[data-v-0c26b8aa], .todolist-edit .edit-container input[type=text][data-v-0c26b8aa] {\n  border: none;\n  outline: none;\n  color: #666;\n  font-size: 15px;\n}\n.todolist-edit .edit-container .todolist-title[data-v-0c26b8aa] {\n  width: 100%;\n  height: 20px;\n}\n.todolist-edit .edit-container .todolist-text[data-v-0c26b8aa] {\n  width: 100%;\n  height: 150px;\n  overflow: hidden;\n  resize: none;\n}\n.todolist-edit .edit-container .input-cnt[data-v-0c26b8aa] {\n  text-align: right;\n  font-size: 14px;\n  color: #797979;\n}", ""]);
 
 // exports
 
@@ -38003,16 +38027,26 @@ var render = function() {
           _vm._v(" "),
           _c("textarea", {
             staticClass: "todolist-text",
-            attrs: { name: "", id: "", cols: "30", rows: "10" },
+            attrs: { name: "" },
             on: {
               focus: function($event) {
                 return _vm.textFocus()
               },
               blur: function($event) {
                 return _vm.textFocusout()
+              },
+              input: function($event) {
+                return _vm.textInput()
               }
             }
           })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-cnt" }, [
+          _c("span", [_vm._v(_vm._s(_vm.inputCnt))]),
+          _vm._v("/"),
+          _c("span", [_vm._v(_vm._s(_vm.inputMaxCnt))]),
+          _c("span", { staticClass: "small" }, [_vm._v("byte")])
         ])
       ])
     ])
@@ -79340,6 +79374,30 @@ function lpad(str, length, pad){
     return str.length < length ? new Array(length - str.length + 1).join(pad) + str : str;
 }
 
+/***/ }),
+
+/***/ "./resources/js/modules/valueCnt.ts":
+/*!******************************************!*\
+  !*** ./resources/js/modules/valueCnt.ts ***!
+  \******************************************/
+/*! exports provided: toByte */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "toByte", function() { return toByte; });
+
+function toByte(str){
+    let len = 0;
+
+    for (var i = 0; i < str.length; i++) {
+        if (escape(str.charAt(i)).length == 6) {
+        len++;
+        }
+        len++;
+    }
+    return len;
+}
 
 /***/ }),
 
