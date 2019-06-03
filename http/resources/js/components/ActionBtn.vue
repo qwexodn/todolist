@@ -1,19 +1,26 @@
 <template>
     <div>
-        <div class='action-btn button'><i class="fas fa-pen-alt"></i></div>
-        <div class='todolist-edit'>
+        <div class='action-btn button' @click="actionToggle()"><i class="fas fa-pen-alt"></i></div>
+        <div class='todolist-edit edit-hide con-shadow'>
             <div class='edit-container'>
+                <div class="datepick input-shadow">
+                    <datePicker v-model="date" :config="options"></datePicker>
+                </div>
                 <div class='con-name'>list</div>
-                <div class='input-case'>
+                <div class='input-case input-shadow'>
                     <label for="title">title</label>
                     <input id=title type="text" class='todolist-title' @focus="titleFocus()" @blur="titleFocusout()">
                 </div>
-                <div class='input-case'>
+                <div class='input-case input-shadow'>
                     <label for="title">text</label>
                     <textarea class='todolist-text' name="" @focus="textFocus()" @blur="textFocusout()" @input="textInput()"></textarea>
                 </div>
                 <div class='input-cnt'>
                     <span>{{ inputCnt }}</span>/<span>{{ inputMaxCnt }}</span><span class='small'>byte</span>
+                </div>
+                <div class='input-btn'>
+                    <button class='input-shadow'>ok</button>
+                    <button class='input-shadow' @click="cancelClick()">cancel</button>
                 </div>
             </div>
         </div>
@@ -23,12 +30,25 @@
 <script>
 import { toByte } from "../modules/valueCnt.ts";
 
+//  Bootstrap datepicker 컴포넌트, css
+import 'bootstrap/dist/css/bootstrap.css';
+import datePicker from 'vue-bootstrap-datetimepicker';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+
 export default {
+    components:{
+        datePicker
+    },
     data(){
         return{
             inputCnt:0,
             inputMaxCnt:200,
             inputMaxRows:9,
+            date:new Date(),
+            options:{
+                format: 'YYYY/MM/DD',
+                useCurrent:false,
+            }
         }
     },
     mounted(){
@@ -39,8 +59,38 @@ export default {
         window.text = document.querySelector('textarea.todolist-text');
         window.textParent = text.parentNode;
         window.textLabel = textParent.children[0];
+
+        
     },
     methods:{
+        cancelClick(){
+            let title = document.querySelector('.todolist-title')
+            let txt = document.querySelector('.todolist-text')
+            let list = document.querySelector('.todolist-edit')
+
+            this.date = new Date();
+            this.inputCnt = 0;
+
+            title.value = '';
+            titleLabel.classList.remove('hidden');
+
+            txt.value = '';
+            textLabel.classList.remove('hidden');
+
+            list.classList.remove('edit-show');
+            list.classList.add('edit-hide');
+        },
+        actionToggle(){
+            let list = document.querySelector('.todolist-edit');
+
+            if(list.className.split(' ').indexOf('edit-show') == -1){
+                list.classList.add("edit-show");
+                list.classList.remove("edit-hide");
+            }else{
+                list.classList.remove('edit-show');
+                list.classList.add("edit-hide");
+            }
+        },
         titleFocus:()=>{
             titleLabel.classList.add('hidden');
         },
@@ -77,9 +127,29 @@ export default {
 
 
 <style lang="scss" scoped>
+@import '../../sass/_variables.scss';
+
 input, textarea{
     display:block;
 }
+
+button{
+    height:30px;
+    width:80px;
+    vertical-align: middle;
+    text-transform:uppercase;
+    font-size:13px;
+    font-family: sans-serif;
+    font-weight: 900;
+    outline: none;
+    background-color:white;
+    color:$inputColor;
+}
+button:active{
+    background-color:$inputColor;
+    color:white;
+}
+
 
 .button{
     cursor:pointer;
@@ -100,11 +170,15 @@ input, textarea{
     color:rgba($color: #000000, $alpha: 0.5);
 }
 
+.input-btn{
+    margin-top:30px;
+    text-align:right;
+}
+
 .input-case{
     position:relative;
     padding:5px 10px;
     box-sizing: border-box;
-    box-shadow: 0 0px 3px 1px #ccc;
     margin:5px 0;
     border-radius: 0.5em;
 
@@ -133,21 +207,37 @@ input, textarea{
     align-items: center;
     font-size:22px;
     color:rgba($color: #000000, $alpha: 0.6);
+    z-index:1;
 }
 
 
 
+.edit-show{
+    bottom:-10px;
+}
+
+.edit-hide{
+    bottom:-500px;
+}
+
+.form-control{
+    border-radius: 3em;
+    height:30px;
+    margin:10px 0;
+}
+.form-control:focus{
+    box-shadow: none;
+}
 
 .todolist-edit{
     position:fixed;
-    bottom:-10px;
     left:50%;
     transform:translate(-50%, 0%);
     width:500px;
     height:400px;
     background-color: white;
     border-radius: 0.5em;
-    box-shadow: 0px 0px 5px 0.2px #999;
+    transition: bottom 0.3s;
 
 
     .edit-container{

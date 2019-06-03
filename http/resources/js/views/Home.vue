@@ -27,9 +27,5 @@ export default {
 @import '../../sass/common.scss';
 @import url('https://fonts.googleapis.com/css?family=Nanum+Gothic');
 
-.content{
-    width:10px;
-    height:10000px;
-}
 </style>
 
