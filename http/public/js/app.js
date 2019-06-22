@@ -1770,6 +1770,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue_bootstrap_datetimepicker__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_bootstrap_datetimepicker__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var pc_bootstrap4_datetimepicker_build_css_bootstrap_datetimepicker_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css */ "./node_modules/pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css");
 /* harmony import */ var pc_bootstrap4_datetimepicker_build_css_bootstrap_datetimepicker_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(pc_bootstrap4_datetimepicker_build_css_bootstrap_datetimepicker_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _modules_strPad_ts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../modules/strPad.ts */ "./resources/js/modules/strPad.ts");
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1804,10 +1810,13 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['uid'],
   components: {
     datePicker: vue_bootstrap_datetimepicker__WEBPACK_IMPORTED_MODULE_2___default.a
   },
+  created: function created() {},
   data: function data() {
     return {
       inputCnt: 0,
@@ -1852,6 +1861,37 @@ __webpack_require__.r(__webpack_exports__);
         list.classList.remove('edit-show');
         list.classList.add("edit-hide");
       }
+    },
+    listAdd: function listAdd() {
+      var form = document.fm;
+      var list = document.querySelector('.todolist-edit');
+      var post = {
+        title: form.title.value,
+        body: form.body.value,
+        uid: this.uid,
+        udate: "".concat(this.date.getFullYear(), "-").concat(Object(_modules_strPad_ts__WEBPACK_IMPORTED_MODULE_4__["lpad"])(this.date.getMonth() + 1, 2, '0'), "-").concat(this.date.getDate())
+      };
+      fetch('/api/todoAdd', {
+        method: 'post',
+        body: JSON.stringify(post),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }).then(function (response) {
+        if (response.ok) {
+          alert('리스트가 등록 되었습니다.');
+          list.classList.remove('edit-show');
+          list.classList.add("edit-hide");
+          form.title.value = '';
+          form.body.value = '';
+          console.log(response);
+        } else {
+          alert('err!! 다시 시도하여 주십시오.');
+        }
+      })["catch"](function () {
+        alert('Server Err!!');
+      });
     },
     titleFocus: function titleFocus() {
       titleLabel.classList.add('hidden');
@@ -1927,7 +1967,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {},
+  data: function data() {
+    return {
+      todos: {
+        id: 0,
+        title: null,
+        body: null,
+        udate: null,
+        state: null,
+        update: null
+      }
+    };
+  }
+});
 
 /***/ }),
 
@@ -1977,10 +2031,45 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    window["this"] = this;
+    window["this"].getUserId();
+  },
   components: {
     Header: _components_header__WEBPACK_IMPORTED_MODULE_0__["default"],
     TodoList: _components_todolist__WEBPACK_IMPORTED_MODULE_1__["default"],
     ActionBtn: _components_actionbtn__WEBPACK_IMPORTED_MODULE_2__["default"]
+  },
+  data: function data() {
+    return {
+      uid: 0
+    };
+  },
+  methods: {
+    //유저 아이디 가져오기
+    getUserId: function getUserId() {
+      fetch('/api/userGet').then(function (response) {
+        if (response.ok) {
+          return response.json();
+        }
+      }).then(function (data) {
+        var res = parseInt(data);
+
+        if (res == -1) {
+          alert('허용되지 않은 아이피입니다.');
+          return;
+        }
+
+        window["this"].uid = res;
+        window["this"].getList();
+      });
+    },
+    //리스트 가져오기
+    getList: function getList() {// fetch('/api/todoGet',{
+      //     method:'post',
+      //     body
+      // })
+    }
   }
 });
 
@@ -6473,7 +6562,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "input[data-v-0c26b8aa], textarea[data-v-0c26b8aa] {\n  display: block;\n}\nbutton[data-v-0c26b8aa] {\n  height: 30px;\n  width: 80px;\n  vertical-align: middle;\n  text-transform: uppercase;\n  font-size: 13px;\n  font-family: sans-serif;\n  font-weight: 900;\n  outline: none;\n  background-color: white;\n  color: rgba(0, 128, 255, 0.6);\n}\nbutton[data-v-0c26b8aa]:active {\n  background-color: rgba(0, 128, 255, 0.6);\n  color: white;\n}\n.button[data-v-0c26b8aa] {\n  cursor: pointer;\n}\n.hidden[data-v-0c26b8aa] {\n  visibility: hidden;\n}\n.small[data-v-0c26b8aa] {\n  font-size: 12px;\n}\n.con-name[data-v-0c26b8aa] {\n  text-transform: uppercase;\n  font-family: \"Nanum Gothic\", sans-serif;\n  font-size: 13px;\n  font-weight: 900;\n  color: rgba(0, 0, 0, 0.5);\n}\n.input-btn[data-v-0c26b8aa] {\n  margin-top: 30px;\n  text-align: right;\n}\n.input-case[data-v-0c26b8aa] {\n  position: relative;\n  padding: 5px 10px;\n  box-sizing: border-box;\n  margin: 5px 0;\n  border-radius: 0.5em;\n}\n.input-case label[data-v-0c26b8aa] {\n  position: absolute;\n  left: 10px;\n  top: 8px;\n  text-transform: uppercase;\n  color: rgba(0, 0, 0, 0.3);\n  font-size: 15px;\n}\n.action-btn[data-v-0c26b8aa] {\n  border-radius: 50%;\n  width: 55px;\n  height: 55px;\n  background-color: #EAF2F8;\n  position: fixed;\n  right: 10%;\n  bottom: 7%;\n  box-shadow: 2px 2px 5px -1px #333;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 22px;\n  color: rgba(0, 0, 0, 0.6);\n  z-index: 1;\n}\n.edit-show[data-v-0c26b8aa] {\n  bottom: -10px;\n}\n.edit-hide[data-v-0c26b8aa] {\n  bottom: -500px;\n}\n.form-control[data-v-0c26b8aa] {\n  border-radius: 3em;\n  height: 30px;\n  margin: 10px 0;\n}\n.form-control[data-v-0c26b8aa]:focus {\n  box-shadow: none;\n}\n.todolist-edit[data-v-0c26b8aa] {\n  position: fixed;\n  left: 50%;\n  -webkit-transform: translate(-50%, 0%);\n          transform: translate(-50%, 0%);\n  width: 500px;\n  height: 400px;\n  background-color: white;\n  border-radius: 0.5em;\n  transition: bottom 0.3s;\n}\n.todolist-edit .edit-container[data-v-0c26b8aa] {\n  width: 400px;\n  height: 370px;\n  margin: 15px 50px;\n  font-family: sans-serif;\n}\n.todolist-edit .edit-container textarea[data-v-0c26b8aa], .todolist-edit .edit-container input[type=text][data-v-0c26b8aa] {\n  border: none;\n  outline: none;\n  color: #666;\n  font-size: 15px;\n}\n.todolist-edit .edit-container .todolist-title[data-v-0c26b8aa] {\n  width: 100%;\n  height: 20px;\n}\n.todolist-edit .edit-container .todolist-text[data-v-0c26b8aa] {\n  width: 100%;\n  height: 150px;\n  overflow: hidden;\n  resize: none;\n}\n.todolist-edit .edit-container .input-cnt[data-v-0c26b8aa] {\n  text-align: right;\n  font-size: 14px;\n  color: #797979;\n}", ""]);
+exports.push([module.i, "input[data-v-0c26b8aa], textarea[data-v-0c26b8aa] {\n  display: block;\n}\nbutton[data-v-0c26b8aa] {\n  height: 30px;\n  width: 80px;\n  vertical-align: middle;\n  text-transform: uppercase;\n  font-size: 13px;\n  font-family: sans-serif;\n  font-weight: 900;\n  outline: none;\n  background-color: white;\n  color: rgba(0, 128, 255, 0.6);\n}\nbutton[data-v-0c26b8aa]:active {\n  background-color: rgba(0, 128, 255, 0.6);\n  color: white;\n}\n.button[data-v-0c26b8aa] {\n  cursor: pointer;\n}\n.hidden[data-v-0c26b8aa] {\n  visibility: hidden;\n}\n.small[data-v-0c26b8aa] {\n  font-size: 12px;\n}\n.con-name[data-v-0c26b8aa] {\n  text-transform: uppercase;\n  font-family: \"Nanum Gothic\", sans-serif;\n  font-size: 13px;\n  font-weight: 900;\n  color: rgba(0, 0, 0, 0.5);\n}\n.input-btn[data-v-0c26b8aa] {\n  margin-top: 30px;\n  text-align: right;\n}\n.input-case[data-v-0c26b8aa] {\n  position: relative;\n  padding: 5px 10px;\n  box-sizing: border-box;\n  margin: 5px 0;\n}\n.input-case label[data-v-0c26b8aa] {\n  position: absolute;\n  left: 10px;\n  top: 8px;\n  text-transform: uppercase;\n  color: rgba(0, 0, 0, 0.3);\n  font-size: 15px;\n}\n.action-btn[data-v-0c26b8aa] {\n  border-radius: 50%;\n  width: 55px;\n  height: 55px;\n  background-color: #EAF2F8;\n  position: fixed;\n  right: 10%;\n  bottom: 7%;\n  box-shadow: 2px 2px 5px -1px #333;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 22px;\n  color: rgba(0, 0, 0, 0.6);\n  z-index: 1;\n}\n.edit-show[data-v-0c26b8aa] {\n  bottom: -10px;\n}\n.edit-hide[data-v-0c26b8aa] {\n  bottom: -500px;\n}\n.form-control[data-v-0c26b8aa] {\n  border-radius: 3em;\n  height: 30px;\n  margin: 10px 0;\n}\n.form-control[data-v-0c26b8aa]:focus {\n  box-shadow: none;\n}\n.todolist-edit[data-v-0c26b8aa] {\n  position: fixed;\n  left: 50%;\n  -webkit-transform: translate(-50%, 0%);\n          transform: translate(-50%, 0%);\n  width: 500px;\n  height: 400px;\n  background-color: white;\n  border-radius: 0.5em;\n  transition: bottom 0.3s;\n}\n.todolist-edit .cancel-btn[data-v-0c26b8aa] {\n  position: absolute;\n  top: -15px;\n  right: -15px;\n  font-size: 25px;\n  background-color: white;\n  color: rgba(0, 0, 0, 0.3);\n  font-weight: 900;\n  width: 35px;\n  height: 35px;\n  line-height: 35px;\n  text-align: center;\n  border-radius: 50%;\n}\n.todolist-edit .cancel-btn[data-v-0c26b8aa] :hover {\n  color: rgba(0, 0, 0, 0.5);\n}\n.todolist-edit .edit-container[data-v-0c26b8aa] {\n  width: 400px;\n  height: 370px;\n  margin: 15px 50px;\n  font-family: sans-serif;\n}\n.todolist-edit .edit-container textarea[data-v-0c26b8aa], .todolist-edit .edit-container input[type=text][data-v-0c26b8aa] {\n  border: none;\n  outline: none;\n  color: #666;\n  font-size: 15px;\n}\n.todolist-edit .edit-container .todolist-title[data-v-0c26b8aa] {\n  width: 100%;\n  height: 20px;\n}\n.todolist-edit .edit-container .todolist-text[data-v-0c26b8aa] {\n  width: 100%;\n  height: 150px;\n  overflow: hidden;\n  resize: none;\n}\n.todolist-edit .edit-container .input-cnt[data-v-0c26b8aa] {\n  text-align: right;\n  font-size: 14px;\n  color: #797979;\n}", ""]);
 
 // exports
 
@@ -58821,73 +58910,101 @@ var render = function() {
     ),
     _vm._v(" "),
     _c("div", { staticClass: "todolist-edit edit-hide con-shadow" }, [
+      _c(
+        "div",
+        {
+          staticClass: "cancel-btn input-shadow button",
+          on: {
+            click: function($event) {
+              return _vm.cancelClick()
+            }
+          }
+        },
+        [_c("i", { staticClass: "fas fa-times" })]
+      ),
+      _vm._v(" "),
       _c("div", { staticClass: "edit-container" }, [
-        _c(
-          "div",
-          { staticClass: "datepick input-shadow" },
-          [
-            _c("datePicker", {
-              attrs: { config: _vm.options },
-              model: {
-                value: _vm.date,
-                callback: function($$v) {
-                  _vm.date = $$v
+        _c("form", { attrs: { name: "fm" } }, [
+          _c("div", { staticClass: "con-name" }, [_vm._v("date")]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "datepick input-shadow" },
+            [
+              _c("datePicker", {
+                attrs: { config: _vm.options },
+                model: {
+                  value: _vm.date,
+                  callback: function($$v) {
+                    _vm.date = $$v
+                  },
+                  expression: "date"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "con-name" }, [_vm._v("list")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "input-case input-shadow" }, [
+            _c("label", [_vm._v("title")]),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "todolist-title",
+              attrs: { name: "title", id: "title", type: "text" },
+              on: {
+                focus: function($event) {
+                  return _vm.titleFocus()
                 },
-                expression: "date"
+                blur: function($event) {
+                  return _vm.titleFocusout()
+                }
               }
             })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "con-name" }, [_vm._v("list")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-case input-shadow" }, [
-          _c("label", { attrs: { for: "title" } }, [_vm._v("title")]),
+          ]),
           _vm._v(" "),
-          _c("input", {
-            staticClass: "todolist-title",
-            attrs: { id: "title", type: "text" },
-            on: {
-              focus: function($event) {
-                return _vm.titleFocus()
-              },
-              blur: function($event) {
-                return _vm.titleFocusout()
+          _c("div", { staticClass: "input-case input-shadow" }, [
+            _c("label", [_vm._v("text")]),
+            _vm._v(" "),
+            _c("textarea", {
+              staticClass: "todolist-text",
+              attrs: { name: "body" },
+              on: {
+                focus: function($event) {
+                  return _vm.textFocus()
+                },
+                blur: function($event) {
+                  return _vm.textFocusout()
+                },
+                input: function($event) {
+                  return _vm.textInput()
+                }
               }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-case input-shadow" }, [
-          _c("label", { attrs: { for: "title" } }, [_vm._v("text")]),
+            })
+          ]),
           _vm._v(" "),
-          _c("textarea", {
-            staticClass: "todolist-text",
-            attrs: { name: "" },
-            on: {
-              focus: function($event) {
-                return _vm.textFocus()
-              },
-              blur: function($event) {
-                return _vm.textFocusout()
-              },
-              input: function($event) {
-                return _vm.textInput()
-              }
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "input-cnt" }, [
-          _c("span", [_vm._v(_vm._s(_vm.inputCnt))]),
-          _vm._v("/"),
-          _c("span", [_vm._v(_vm._s(_vm.inputMaxCnt))]),
-          _c("span", { staticClass: "small" }, [_vm._v("byte")])
+          _c("div", { staticClass: "input-cnt" }, [
+            _c("span", [_vm._v(_vm._s(_vm.inputCnt))]),
+            _vm._v("/"),
+            _c("span", [_vm._v(_vm._s(_vm.inputMaxCnt))]),
+            _c("span", { staticClass: "small" }, [_vm._v("byte")])
+          ])
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "input-btn" }, [
-          _c("button", { staticClass: "input-shadow" }, [_vm._v("ok")]),
+          _c(
+            "button",
+            {
+              staticClass: "input-shadow",
+              on: {
+                click: function($event) {
+                  return _vm.listAdd()
+                }
+              }
+            },
+            [_vm._v("ok")]
+          ),
           _vm._v(" "),
           _c(
             "button",
@@ -58901,7 +59018,8 @@ var render = function() {
             },
             [_vm._v("cancel")]
           )
-        ])
+        ]),
+        _vm._v("\n            " + _vm._s(_vm.uid) + "\n        ")
       ])
     ])
   ])
@@ -58961,7 +59079,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", [_vm._v("\r\n    " + _vm._s(_vm.todos) + "\r\n")])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -59017,7 +59135,7 @@ var render = function() {
       _vm._v(" "),
       _c("v-flex", { attrs: { xs12: "" } }, [_c("TodoList")], 1),
       _vm._v(" "),
-      _c("ActionBtn")
+      _c("ActionBtn", { attrs: { uid: _vm.uid } })
     ],
     1
   )
@@ -100250,7 +100368,7 @@ function toByte(str){
 
     for (var i = 0; i < str.length; i++) {
         if (escape(str.charAt(i)).length == 6) {
-        len++;
+            len++;
         }
         len++;
     }

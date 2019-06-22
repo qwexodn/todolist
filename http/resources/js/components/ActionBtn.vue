@@ -2,26 +2,31 @@
     <div>
         <div class='action-btn button' @click="actionToggle()"><i class="fas fa-pen-alt"></i></div>
         <div class='todolist-edit edit-hide con-shadow'>
+            <div class='cancel-btn input-shadow button' @click="cancelClick()"><i class="fas fa-times"></i></div>
             <div class='edit-container'>
-                <div class="datepick input-shadow">
-                    <datePicker v-model="date" :config="options"></datePicker>
-                </div>
-                <div class='con-name'>list</div>
-                <div class='input-case input-shadow'>
-                    <label for="title">title</label>
-                    <input id=title type="text" class='todolist-title' @focus="titleFocus()" @blur="titleFocusout()">
-                </div>
-                <div class='input-case input-shadow'>
-                    <label for="title">text</label>
-                    <textarea class='todolist-text' name="" @focus="textFocus()" @blur="textFocusout()" @input="textInput()"></textarea>
-                </div>
-                <div class='input-cnt'>
-                    <span>{{ inputCnt }}</span>/<span>{{ inputMaxCnt }}</span><span class='small'>byte</span>
-                </div>
+                <form name='fm'>
+                    <div class='con-name'>date</div>
+                    <div class="datepick input-shadow">
+                        <datePicker v-model="date" :config="options"></datePicker>
+                    </div>
+                    <div class='con-name'>list</div>
+                    <div class='input-case input-shadow'>
+                        <label>title</label>
+                        <input name='title' id=title type="text" class='todolist-title' @focus="titleFocus()" @blur="titleFocusout()">
+                    </div>
+                    <div class='input-case input-shadow'>
+                        <label>text</label>
+                        <textarea name='body' class='todolist-text' @focus="textFocus()" @blur="textFocusout()" @input="textInput()"></textarea>
+                    </div>
+                    <div class='input-cnt'>
+                        <span>{{ inputCnt }}</span>/<span>{{ inputMaxCnt }}</span><span class='small'>byte</span>
+                    </div>
+                </form>
                 <div class='input-btn'>
-                    <button class='input-shadow'>ok</button>
+                    <button class='input-shadow' @click="listAdd()">ok</button>
                     <button class='input-shadow' @click="cancelClick()">cancel</button>
                 </div>
+                {{uid}}
             </div>
         </div>
     </div>
@@ -34,10 +39,15 @@ import { toByte } from "../modules/valueCnt.ts";
 import 'bootstrap/dist/css/bootstrap.css';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+import {lpad} from '../modules/strPad.ts';
 
 export default {
+    props:['uid'],
     components:{
         datePicker
+    },
+    created(){
+        
     },
     data(){
         return{
@@ -48,7 +58,7 @@ export default {
             options:{
                 format: 'YYYY/MM/DD',
                 useCurrent:false,
-            }
+            },
         }
     },
     mounted(){
@@ -90,6 +100,40 @@ export default {
                 list.classList.remove('edit-show');
                 list.classList.add("edit-hide");
             }
+        },
+        listAdd(){
+            let form = document.fm;
+            let list = document.querySelector('.todolist-edit');
+
+            let post = {
+                title:form.title.value,
+                body:form.body.value,
+                uid:this.uid,
+                udate:`${this.date.getFullYear()}-${lpad(this.date.getMonth()+1, 2, '0')}-${this.date.getDate()}`,
+            }
+
+            fetch('/api/todoAdd',{
+                method:'post',
+                body:JSON.stringify(post),
+                headers:{
+                    'Content-Type':'application/json',
+                    'Accept':'application/json',
+                }
+            }).then(function(response){
+                if(response.ok){
+                    alert('리스트가 등록 되었습니다.');
+
+                    list.classList.remove('edit-show');
+                    list.classList.add("edit-hide");
+                    form.title.value = '';
+                    form.body.value = '';
+                    console.log(response);
+                }else{
+                    alert('err!! 다시 시도하여 주십시오.');
+                }
+            }).catch(function(){
+                alert('Server Err!!');
+            });
         },
         titleFocus:()=>{
             titleLabel.classList.add('hidden');
@@ -180,7 +224,6 @@ button:active{
     padding:5px 10px;
     box-sizing: border-box;
     margin:5px 0;
-    border-radius: 0.5em;
 
 
     label{
@@ -239,6 +282,24 @@ button:active{
     border-radius: 0.5em;
     transition: bottom 0.3s;
 
+    .cancel-btn{
+        position: absolute;
+        top:-15px;
+        right:-15px;
+        font-size:25px;
+        background-color:white;
+        color:rgba($color: #000000, $alpha: 0.3);
+        font-weight:900;
+        width:35px;
+        height:35px;
+        line-height:35px;
+        text-align:center;
+        border-radius: 50%;
+
+        :hover{
+            color:rgba($color: #000000, $alpha: 0.5);
+        }
+    }
 
     .edit-container{
         width: 400px;

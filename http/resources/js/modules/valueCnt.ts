@@ -4,7 +4,7 @@ export function toByte(str){
 
     for (var i = 0; i < str.length; i++) {
         if (escape(str.charAt(i)).length == 6) {
-        len++;
+            len++;
         }
         len++;
     }
