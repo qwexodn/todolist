@@ -4,9 +4,9 @@
             <Header></Header>
         </v-flex>
         <v-flex xs12>
-            <TodoList></TodoList>
+            <TodoList :todos='todos'></TodoList>
         </v-flex>
-        <ActionBtn :uid='uid'></ActionBtn>
+        <ActionBtn :uid='uid' @listUpdate='getList'></ActionBtn>
     </v-layout>
 </template>
 <script>
@@ -28,6 +28,7 @@ export default {
     data(){
         return{
             uid:0,
+            todos:[],
         }
     },
     methods:{
@@ -52,19 +53,25 @@ export default {
         },
         //리스트 가져오기
         getList(){
+            let post = {
+                uid:window.this.uid
+            }
 
-            // fetch('/api/todoGet',{
-            //     method:'post',
-            //     body
-            // })
+            fetch('/api/todoGet',{
+                method:'post',
+                body:JSON.stringify(post),
+                headers:{
+                    'Content-Type':'application/json',
+                    'Accept':'application/json',
+                }
+            }).then(function(response){
+                if(response.ok){
+                    return response.json();
+                }
+            }).then(function(data){
+                window.this.todos = data;
+            });
         }
     }
 }
 </script>
-
-<style lang="scss">
-@import '../../sass/common.scss';
-@import url('https://fonts.googleapis.com/css?family=Nanum+Gothic');
-
-</style>
-

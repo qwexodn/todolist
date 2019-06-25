@@ -26,7 +26,6 @@
                     <button class='input-shadow' @click="listAdd()">ok</button>
                     <button class='input-shadow' @click="cancelClick()">cancel</button>
                 </div>
-                {{uid}}
             </div>
         </div>
     </div>
@@ -41,6 +40,8 @@ import datePicker from 'vue-bootstrap-datetimepicker';
 import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 import {lpad} from '../modules/strPad.ts';
 
+let date = new Date;
+
 export default {
     props:['uid'],
     components:{
@@ -54,7 +55,7 @@ export default {
             inputCnt:0,
             inputMaxCnt:200,
             inputMaxRows:9,
-            date:new Date(),
+            date:`${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`,
             options:{
                 format: 'YYYY/MM/DD',
                 useCurrent:false,
@@ -78,7 +79,7 @@ export default {
             let txt = document.querySelector('.todolist-text')
             let list = document.querySelector('.todolist-edit')
 
-            this.date = new Date();
+            this.date = `${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`;
             this.inputCnt = 0;
 
             title.value = '';
@@ -105,11 +106,15 @@ export default {
             let form = document.fm;
             let list = document.querySelector('.todolist-edit');
 
+            window.this = this;
+
+            alert(this.date);
+
             let post = {
                 title:form.title.value,
-                body:form.body.value,
+                body:form.body.value.split('\n').join('<br>'),
                 uid:this.uid,
-                udate:`${this.date.getFullYear()}-${lpad(this.date.getMonth()+1, 2, '0')}-${this.date.getDate()}`,
+                udate:this.date,
             }
 
             fetch('/api/todoAdd',{
@@ -127,12 +132,13 @@ export default {
                     list.classList.add("edit-hide");
                     form.title.value = '';
                     form.body.value = '';
-                    console.log(response);
+
+                    location.reload();
                 }else{
                     alert('err!! 다시 시도하여 주십시오.');
                 }
             }).catch(function(){
-                alert('Server Err!!');
+                alert('Err!!');
             });
         },
         titleFocus:()=>{

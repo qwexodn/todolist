@@ -24,13 +24,13 @@ class TodoController extends Controller
     }
 
     public function search(Request $request){
-        // $uid = $request->input('uid');
+        $uid = $request->input('uid');
 
-        // $db = new Todo();
-        // $res = $db->select('id', 'title', 'body', 'udate', 'state', 'updated_at as update')
-        //             ->where('uid', $uid)
-        //             ->get();
-        // if($res)  return $res;
+        $db = new Todo();
+        $res = $db->select('id', 'title', 'body', 'udate', 'state', 'updated_at as update')
+                    ->where('uid', $uid)
+                    ->get();
+        if($res)  return $res;
     }
 
     
