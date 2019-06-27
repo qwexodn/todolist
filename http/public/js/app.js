@@ -1976,8 +1976,59 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['todos']
+  props: ['todos', 'uid'],
+  data: function data() {
+    return {};
+  },
+  methods: {
+    todoClear: function todoClear(index) {
+      var _this = this;
+
+      var post = {
+        'uid': this.uid,
+        'index': index
+      };
+      fetch('/api/todoClear', {
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify(post)
+      }).then(function (response) {
+        if (response.ok) {
+          _this.$emit('listupdate');
+        }
+      });
+    },
+    todoHold: function todoHold(index) {
+      var _this2 = this;
+
+      var post = {
+        'uid': this.uid,
+        'index': index
+      };
+      fetch('/api/todoHold', {
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify(post)
+      }).then(function (response) {
+        if (response.ok) {
+          _this2.$emit('listupdate');
+        }
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -2029,8 +2080,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
-    window["this"] = this;
-    window["this"].getUserId();
+    this.getUserId();
   },
   components: {
     Header: _components_header__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -2046,26 +2096,31 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     //유저 아이디 가져오기
     getUserId: function getUserId() {
+      var _this = this;
+
       fetch('/api/userGet').then(function (response) {
         if (response.ok) {
-          return response.json();
+          return response.text();
         }
       }).then(function (data) {
-        var res = parseInt(data);
+        var res = data;
 
         if (res == -1) {
           alert('허용되지 않은 아이피입니다.');
           return;
         }
 
-        window["this"].uid = res;
-        window["this"].getList();
+        _this.uid = res;
+
+        _this.getList();
       });
     },
     //리스트 가져오기
     getList: function getList() {
+      var _this2 = this;
+
       var post = {
-        uid: window["this"].uid
+        uid: this.uid
       };
       fetch('/api/todoGet', {
         method: 'post',
@@ -2079,7 +2134,7 @@ __webpack_require__.r(__webpack_exports__);
           return response.json();
         }
       }).then(function (data) {
-        window["this"].todos = data;
+        _this2.todos = data;
       });
     }
   }
@@ -6612,7 +6667,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".box[data-v-229db52f] {\n  display: flex;\n  justify-content: center;\n}\n.content[data-v-229db52f] {\n  width: 600px;\n  border: none;\n  margin: 10px 0;\n}\n.content .item[data-v-229db52f] {\n  height: 200px;\n  background-color: white;\n  border-radius: 0.5em;\n  margin: 5px 0;\n  padding: 10px;\n  box-sizing: border-box;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f], .content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  all: unset;\n  font-family: sans-serif;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f] {\n  display: inline-block;\n}\n.content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  display: block;\n}\n.content .item .title[data-v-229db52f] {\n  font-size: 17px;\n  font-weight: 700;\n  min-width: 390px;\n}\n.content .item .udate[data-v-229db52f] {\n  font-size: 15px;\n  font-weight: 700;\n  text-align: right;\n  min-width: 170px;\n}\n.content .item .update[data-v-229db52f] {\n  font-size: 12px;\n  text-align: right;\n  margin: 5px;\n}\n.content .item .body[data-v-229db52f] {\n  font-size: 15px;\n  text-align: left;\n  word-wrap: break-word;\n}", ""]);
+exports.push([module.i, ".box[data-v-229db52f] {\n  display: flex;\n  justify-content: center;\n}\n.content[data-v-229db52f] {\n  width: 600px;\n  border: none;\n  margin: 10px 0;\n}\n.content .done[data-v-229db52f] {\n  background-color: rgba(0, 0, 0, 0.3);\n}\n.content .stay[data-v-229db52f] {\n  background-color: white;\n}\n.content .item[data-v-229db52f] {\n  height: 200px;\n  border-radius: 0.5em;\n  margin: 5px 0;\n  padding: 10px;\n  box-sizing: border-box;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f], .content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  all: unset;\n  font-family: sans-serif;\n  color: #434343;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f] {\n  display: inline-block;\n}\n.content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  display: block;\n}\n.content .item .title[data-v-229db52f] {\n  font-size: 17px;\n  font-weight: 700;\n  min-width: 390px;\n  color: #3490dc;\n}\n.content .item .udate[data-v-229db52f] {\n  font-size: 15px;\n  font-weight: 700;\n  text-align: right;\n  min-width: 170px;\n}\n.content .item .update[data-v-229db52f] {\n  font-size: 12px;\n  text-align: right;\n  margin: 5px;\n}\n.content .item .body[data-v-229db52f] {\n  font-size: 15px;\n  text-align: left;\n  word-wrap: break-word;\n  min-height: 110px;\n}\n.content .item .input-group[data-v-229db52f] {\n  display: block;\n  text-align: right;\n}\n.content .item .input-group button[data-v-229db52f] {\n  font-size: 20px;\n  display: inline-block;\n  margin-left: 10px;\n  outline: none;\n  transition: -webkit-transform 0.1s;\n  transition: transform 0.1s;\n  transition: transform 0.1s, -webkit-transform 0.1s;\n}\n.content .item .input-group button[data-v-229db52f] :hover {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n.content .item .input-group button[data-v-229db52f] :active {\n  -webkit-transform: scale(1);\n          transform: scale(1);\n}\n.content .item .input-group .clear[data-v-229db52f] {\n  color: #3490dc;\n}\n.content .item .input-group .hold[data-v-229db52f] {\n  color: rgba(34, 139, 34, 0.5);\n}\n.content .item .input-group .updated[data-v-229db52f] {\n  color: rgba(210, 105, 30, 0.5);\n}\n.content .item .input-group .delete[data-v-229db52f] {\n  color: rgba(255, 0, 0, 0.5);\n}", ""]);
 
 // exports
 
@@ -59144,26 +59199,85 @@ var render = function() {
       "div",
       { staticClass: "content" },
       _vm._l(_vm.todos, function(item) {
-        return _c("div", { key: item.id, staticClass: "item con-shadow" }, [
-          _c("div", { staticClass: "title" }, [_vm._v(_vm._s(item.title))]),
-          _vm._v(" "),
-          _c("div", { staticClass: "udate" }, [_vm._v(_vm._s(item.udate))]),
-          _vm._v(" "),
-          _c("div", { staticClass: "update" }, [
-            _vm._v("작성일 : " + _vm._s(item.update))
-          ]),
-          _vm._v(" "),
-          _c("div", {
-            staticClass: "body",
-            domProps: { innerHTML: _vm._s(item.body) }
-          })
-        ])
+        return _c(
+          "div",
+          {
+            key: item.id,
+            staticClass: "item con-shadow",
+            class: { done: item.state === "clear", stay: item.state === "stay" }
+          },
+          [
+            _c("div", { staticClass: "title" }, [_vm._v(_vm._s(item.title))]),
+            _vm._v(" "),
+            _c("div", { staticClass: "udate" }, [_vm._v(_vm._s(item.udate))]),
+            _vm._v(" "),
+            _c("div", { staticClass: "update" }, [
+              _vm._v("작성일 : " + _vm._s(item.update))
+            ]),
+            _vm._v(" "),
+            _c("div", {
+              staticClass: "body",
+              domProps: { innerHTML: _vm._s(item.body) }
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "input-group" }, [
+              item.state === "stay"
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "clear",
+                      on: {
+                        click: function($event) {
+                          return _vm.todoClear(item.id)
+                        }
+                      }
+                    },
+                    [_c("i", { staticClass: "fas fa-check" })]
+                  )
+                : item.state === "clear"
+                ? _c(
+                    "button",
+                    {
+                      staticClass: "hold",
+                      on: {
+                        click: function($event) {
+                          return _vm.todoHold(item.id)
+                        }
+                      }
+                    },
+                    [_c("i", { staticClass: "fas fa-sync-alt" })]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._m(0, true),
+              _vm._v(" "),
+              _vm._m(1, true)
+            ])
+          ]
+        )
       }),
       0
     )
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "updated" }, [
+      _c("i", { staticClass: "fas fa-pen" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("button", { staticClass: "delete" }, [
+      _c("i", { staticClass: "fas fa-trash-alt" })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -59218,7 +59332,12 @@ var render = function() {
       _c(
         "v-flex",
         { attrs: { xs12: "" } },
-        [_c("TodoList", { attrs: { todos: _vm.todos } })],
+        [
+          _c("TodoList", {
+            attrs: { todos: _vm.todos, uid: _vm.uid },
+            on: { listupdate: _vm.getList }
+          })
+        ],
         1
       ),
       _vm._v(" "),

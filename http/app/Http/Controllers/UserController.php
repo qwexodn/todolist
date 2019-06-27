@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Http\Controllers\Common;
 
 class UserController extends Controller
 {
@@ -28,11 +29,13 @@ class UserController extends Controller
      * 유저 pid 찾기
      */
     public function search(){
+        $common = new Common();
+
         $res = $this->users->where('ip', $_SERVER["REMOTE_ADDR"])
                             ->get();
         
         foreach($res as $row){
-            return $row->id;
+            return $common->uidEncode($row->id);
         }
         return -1;
     }

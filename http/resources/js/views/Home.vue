@@ -4,7 +4,7 @@
             <Header></Header>
         </v-flex>
         <v-flex xs12>
-            <TodoList :todos='todos'></TodoList>
+            <TodoList :todos='todos' :uid='uid' @listupdate='getList'></TodoList>
         </v-flex>
         <ActionBtn :uid='uid' @listUpdate='getList'></ActionBtn>
     </v-layout>
@@ -16,9 +16,7 @@ import ActionBtn from "../components/actionbtn";
 
 export default {
     created(){
-        window.this = this;
-
-        window.this.getUserId();
+        this.getUserId();
     },
     components:{
         Header,
@@ -37,24 +35,24 @@ export default {
             fetch('/api/userGet')
             .then(function(response){
                 if(response.ok){
-                    return response.json();
+                    return response.text();
                 }
             })
-            .then(function(data){
-                let res = parseInt(data);
+            .then((data)=>{
+                let res = data;
                 if(res == -1){
                     alert('허용되지 않은 아이피입니다.');
                     return;
                 }
-                window.this.uid = res;
+                this.uid = res;
 
-                window.this.getList();
+                this.getList();
             });
         },
         //리스트 가져오기
         getList(){
             let post = {
-                uid:window.this.uid
+                uid:this.uid
             }
 
             fetch('/api/todoGet',{
@@ -68,8 +66,8 @@ export default {
                 if(response.ok){
                     return response.json();
                 }
-            }).then(function(data){
-                window.this.todos = data;
+            }).then((data)=>{
+                this.todos = data;
             });
         }
     }
