@@ -9,8 +9,8 @@
             <div class='input-group'>
                 <button class='clear' v-if="item.state === 'stay'" @click='todoClear(item.id)'><i class="fas fa-check"></i></button>
                 <button class='hold' v-else-if="item.state === 'clear'" @click='todoHold(item.id)'><i class="fas fa-sync-alt"></i></button>
-                <button class='updated'><i class="fas fa-pen"></i></button>
-                <button class='delete'><i class="fas fa-trash-alt"></i></button>
+                <button class='updated' @click="todoUpdate(item.id, item.title, item.body, item.udate)"><i class="fas fa-pen"></i></button>
+                <button class='delete' @click='todoDelete(item.id)'><i class="fas fa-trash-alt"></i></button>
             </div>
         </div>
     </div>
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { eventBus } from '../app';
+
 export default {
     props:['todos', 'uid'],
     data(){
@@ -63,6 +65,30 @@ export default {
                     this.$emit('listupdate');
                 }
             })
+        },
+        todoUpdate(index, title, body, udate){
+            eventBus.listUpdate(index, title, body, udate);
+        },
+        todoDelete(index){
+            if(confirm('리스트를 삭제 하시겠습니까?')){
+                let post = {
+                    'uid':this.uid,
+                    'index':index
+                }
+
+                fetch('/api/todoDelete',{
+                    headers:{
+                        'content-type':'application/json',
+                        'accept':'application/json'
+                    },
+                    method:'post',
+                    body:JSON.stringify(post)
+                }).then((response)=>{
+                    if(response.ok){
+                        this.$emit('listupdate');
+                    }
+                })
+            }
         }
     }
 }
@@ -141,6 +167,7 @@ export default {
                 margin-left:10px;
                 outline:none;
                 transition:transform 0.1s;
+                padding:5px;
 
                 :hover{
                     transform:scale(1.2);

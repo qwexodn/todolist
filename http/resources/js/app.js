@@ -25,6 +25,14 @@ $.extend(true, jQuery.fn.datetimepicker.defaults, {
     }
 });
 
+export const eventBus = new Vue({
+    methods:{
+        listUpdate(index, title, body, udate){
+            this.$emit('listUpdate', index, title, body, udate);
+        }
+    }
+});
+
 const app = new Vue({
     el: '#app',
     router:Router,

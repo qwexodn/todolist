@@ -24,9 +24,41 @@ class TodoController extends Controller
         $db->state = 'stay';
 
         $db->save();
+    }
 
-        // return $request->input('title');
-        // return $db;
+    /**
+     * 리스트 수정
+     */
+    public function update(Request $request)
+    {
+        $common = new Common();
+        $db = new Todo();
+
+        $title = $request->input('title') == null ? '' : $request->input('title');
+        $body = $request->input('body') == null ? '' : $request->input('body');
+        $uid = $common->uidDecode($request->input('uid'));
+        $index = $request->input('id');
+        $udate = $request->input('udate');
+
+        $db->where('uid', $uid)
+            ->where('id', $index)
+            ->update(['title'=>$title, 'body'=>$body, 'udate'=>$udate]);
+    }
+
+    /**
+     * 리스트 삭제
+     */
+    public function delete(Request $request)
+    {
+        $common = new Common();
+        $db = new Todo();
+
+        $uid = $common->uidDecode($request->input('uid'));
+        $index = $request->input('index');
+
+        $db->where('uid', $uid)
+            ->where('id', $index)
+            ->update(['state'=>'cancel']);
     }
 
     /**
@@ -40,6 +72,7 @@ class TodoController extends Controller
         $db = new Todo();
         $res = $db->select('id', 'title', 'body', 'udate', 'state', 'created_at as update')
                     ->where('uid', $uid)
+                    ->where('state', '!=', 'cancel')
                     ->get();
         if($res)  return $res;
     }

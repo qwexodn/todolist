@@ -12,11 +12,11 @@
                     <div class='con-name'>list</div>
                     <div class='input-case input-shadow'>
                         <label>title</label>
-                        <input name='title' id=title type="text" class='todolist-title' @focus="titleFocus()" @blur="titleFocusout()">
+                        <input name='title' id=title type="text" v-model='title' class='todolist-title' @focus="titleFocus()" @blur="titleFocusout()">
                     </div>
                     <div class='input-case input-shadow'>
                         <label>text</label>
-                        <textarea name='body' class='todolist-text' @focus="textFocus()" @blur="textFocusout()" @input="textInput()"></textarea>
+                        <textarea name='body' class='todolist-text' v-model='body' @focus="textFocus()" @blur="textFocusout()" @input="textInput()"></textarea>
                     </div>
                     <div class='input-cnt'>
                         <span>{{ inputCnt }}</span>/<span>{{ inputMaxCnt }}</span><span class='small'>byte</span>
@@ -39,6 +39,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 import {lpad} from '../modules/strPad.ts';
+import { eventBus } from '../app';
 
 let date = new Date;
 
@@ -48,7 +49,17 @@ export default {
         datePicker
     },
     created(){
-        
+        eventBus.$on('listUpdate', (index, title, body, udate) => {
+            let list = document.querySelector('.todolist-edit');
+            
+            this.index = index;
+            this.date = udate;
+            this.body = body;
+            this.title = title;
+
+            list.classList.add('edit-show');
+            list.classList.remove("edit-hide");
+        })
     },
     data(){
         return{
@@ -60,6 +71,9 @@ export default {
                 format: 'YYYY/MM/DD',
                 useCurrent:false,
             },
+            index:0,
+            title:null,
+            body:null,
         }
     },
     mounted(){
@@ -82,11 +96,13 @@ export default {
             this.date = `${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`;
             this.inputCnt = 0;
 
-            title.value = '';
+            this.title = null;
             titleLabel.classList.remove('hidden');
 
-            txt.value = '';
+            this.body = null;
             textLabel.classList.remove('hidden');
+
+            this.index = 0;
 
             list.classList.remove('edit-show');
             list.classList.add('edit-hide');
@@ -106,40 +122,74 @@ export default {
             let form = document.fm;
             let list = document.querySelector('.todolist-edit');
 
-            window.this = this;
+            if(this.index == 0){
+                let post = {
+                    title:form.title.value,
+                    body:form.body.value.split('\n').join('<br>'),
+                    uid:this.uid,
+                    udate:this.date,
+                }
 
-            alert(this.date);
+                fetch('/api/todoAdd',{
+                    method:'post',
+                    body:JSON.stringify(post),
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Accept':'application/json',
+                    }
+                }).then(function(response){
+                    if(response.ok){
+                        alert('리스트가 등록 되었습니다.');
 
-            let post = {
-                title:form.title.value,
-                body:form.body.value.split('\n').join('<br>'),
-                uid:this.uid,
-                udate:this.date,
+                        list.classList.remove('edit-show');
+                        list.classList.add("edit-hide");
+                        this.title = null;
+                        this.body = null;
+                        this.udate = `${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`;
+                        this.index = 0;
+
+                        this.$emit('listUpdate');
+                    }else{
+                        alert('err!! 다시 시도하여 주십시오.');
+                    }
+                }).catch(function(){
+                    alert('Err!!');
+                });
+            }else{
+                let post = {
+                    title:this.title,
+                    body:this.body,
+                    uid:this.uid,
+                    udate:this.date,
+                    id:this.index
+                }
+
+                fetch('/api/todoUpdate',{
+                    method:'post',
+                    body:JSON.stringify(post),
+                    headers:{
+                        'Content-Type':'application/json',
+                        'Accept':'application/json',
+                    }
+                }).then((response) => {
+                    if(response.ok){
+                        alert('리스트가 수정 되었습니다.');
+
+                        list.classList.remove('edit-show');
+                        list.classList.add("edit-hide");
+                        this.title = null;
+                        this.body = null;
+                        this.udate = `${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`;
+                        this.index = 0;
+
+                        this.$emit('listUpdate');
+                    }else{
+                        alert('err!! 다시 시도하여 주십시오.');
+                    }
+                }).catch(function(){
+                    alert('Err!!');
+                });
             }
-
-            fetch('/api/todoAdd',{
-                method:'post',
-                body:JSON.stringify(post),
-                headers:{
-                    'Content-Type':'application/json',
-                    'Accept':'application/json',
-                }
-            }).then(function(response){
-                if(response.ok){
-                    alert('리스트가 등록 되었습니다.');
-
-                    list.classList.remove('edit-show');
-                    list.classList.add("edit-hide");
-                    form.title.value = '';
-                    form.body.value = '';
-
-                    location.reload();
-                }else{
-                    alert('err!! 다시 시도하여 주십시오.');
-                }
-            }).catch(function(){
-                alert('Err!!');
-            });
         },
         titleFocus:()=>{
             titleLabel.classList.add('hidden');

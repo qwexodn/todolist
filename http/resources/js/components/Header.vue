@@ -32,7 +32,7 @@
     top:0px;
     width:100%;
     height:50px;
-    box-shadow:0 -5px 20px 5px rgba(0, 0, 0, 0.3);
+    box-shadow:0 -5px 5px 5px rgba(0, 0, 0, 0.1);
     text-align:center;
     font-family: 'Nanum Gothic', sans-serif;
     

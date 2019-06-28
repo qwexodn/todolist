@@ -1771,6 +1771,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var pc_bootstrap4_datetimepicker_build_css_bootstrap_datetimepicker_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css */ "./node_modules/pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css");
 /* harmony import */ var pc_bootstrap4_datetimepicker_build_css_bootstrap_datetimepicker_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(pc_bootstrap4_datetimepicker_build_css_bootstrap_datetimepicker_css__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _modules_strPad_ts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../modules/strPad.ts */ "./resources/js/modules/strPad.ts");
+/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../app */ "./resources/js/app.js");
 //
 //
 //
@@ -1810,13 +1811,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var date = new Date();
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['uid'],
   components: {
     datePicker: vue_bootstrap_datetimepicker__WEBPACK_IMPORTED_MODULE_2___default.a
   },
-  created: function created() {},
+  created: function created() {
+    var _this = this;
+
+    _app__WEBPACK_IMPORTED_MODULE_5__["eventBus"].$on('listUpdate', function (index, title, body, udate) {
+      var list = document.querySelector('.todolist-edit');
+      _this.index = index;
+      _this.date = udate;
+      _this.body = body;
+      _this.title = title;
+      list.classList.add('edit-show');
+      list.classList.remove("edit-hide");
+    });
+  },
   data: function data() {
     return {
       inputCnt: 0,
@@ -1826,7 +1840,10 @@ var date = new Date();
       options: {
         format: 'YYYY/MM/DD',
         useCurrent: false
-      }
+      },
+      index: 0,
+      title: null,
+      body: null
     };
   },
   mounted: function mounted() {
@@ -1844,10 +1861,11 @@ var date = new Date();
       var list = document.querySelector('.todolist-edit');
       this.date = "".concat(date.getFullYear(), "-").concat(Object(_modules_strPad_ts__WEBPACK_IMPORTED_MODULE_4__["lpad"])(date.getMonth() + 1, 2, '0'), "-").concat(date.getDate());
       this.inputCnt = 0;
-      title.value = '';
+      this.title = null;
       titleLabel.classList.remove('hidden');
-      txt.value = '';
+      this.body = null;
       textLabel.classList.remove('hidden');
+      this.index = 0;
       list.classList.remove('edit-show');
       list.classList.add('edit-hide');
     },
@@ -1863,37 +1881,74 @@ var date = new Date();
       }
     },
     listAdd: function listAdd() {
+      var _this2 = this;
+
       var form = document.fm;
       var list = document.querySelector('.todolist-edit');
-      window["this"] = this;
-      alert(this.date);
-      var post = {
-        title: form.title.value,
-        body: form.body.value.split('\n').join('<br>'),
-        uid: this.uid,
-        udate: this.date
-      };
-      fetch('/api/todoAdd', {
-        method: 'post',
-        body: JSON.stringify(post),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }).then(function (response) {
-        if (response.ok) {
-          alert('리스트가 등록 되었습니다.');
-          list.classList.remove('edit-show');
-          list.classList.add("edit-hide");
-          form.title.value = '';
-          form.body.value = '';
-          location.reload();
-        } else {
-          alert('err!! 다시 시도하여 주십시오.');
-        }
-      })["catch"](function () {
-        alert('Err!!');
-      });
+
+      if (this.index == 0) {
+        var post = {
+          title: form.title.value,
+          body: form.body.value.split('\n').join('<br>'),
+          uid: this.uid,
+          udate: this.date
+        };
+        fetch('/api/todoAdd', {
+          method: 'post',
+          body: JSON.stringify(post),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }).then(function (response) {
+          if (response.ok) {
+            alert('리스트가 등록 되었습니다.');
+            list.classList.remove('edit-show');
+            list.classList.add("edit-hide");
+            this.title = null;
+            this.body = null;
+            this.udate = "".concat(date.getFullYear(), "-").concat(Object(_modules_strPad_ts__WEBPACK_IMPORTED_MODULE_4__["lpad"])(date.getMonth() + 1, 2, '0'), "-").concat(date.getDate());
+            this.index = 0;
+            this.$emit('listUpdate');
+          } else {
+            alert('err!! 다시 시도하여 주십시오.');
+          }
+        })["catch"](function () {
+          alert('Err!!');
+        });
+      } else {
+        var _post = {
+          title: this.title,
+          body: this.body,
+          uid: this.uid,
+          udate: this.date,
+          id: this.index
+        };
+        fetch('/api/todoUpdate', {
+          method: 'post',
+          body: JSON.stringify(_post),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }).then(function (response) {
+          if (response.ok) {
+            alert('리스트가 수정 되었습니다.');
+            list.classList.remove('edit-show');
+            list.classList.add("edit-hide");
+            _this2.title = null;
+            _this2.body = null;
+            _this2.udate = "".concat(date.getFullYear(), "-").concat(Object(_modules_strPad_ts__WEBPACK_IMPORTED_MODULE_4__["lpad"])(date.getMonth() + 1, 2, '0'), "-").concat(date.getDate());
+            _this2.index = 0;
+
+            _this2.$emit('listUpdate');
+          } else {
+            alert('err!! 다시 시도하여 주십시오.');
+          }
+        })["catch"](function () {
+          alert('Err!!');
+        });
+      }
     },
     titleFocus: function titleFocus() {
       titleLabel.classList.add('hidden');
@@ -1963,6 +2018,7 @@ var date = new Date();
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _app__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../app */ "./resources/js/app.js");
 //
 //
 //
@@ -1982,6 +2038,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['todos', 'uid'],
   data: function data() {
@@ -2027,6 +2084,31 @@ __webpack_require__.r(__webpack_exports__);
           _this2.$emit('listupdate');
         }
       });
+    },
+    todoUpdate: function todoUpdate(index, title, body, udate) {
+      _app__WEBPACK_IMPORTED_MODULE_0__["eventBus"].listUpdate(index, title, body, udate);
+    },
+    todoDelete: function todoDelete(index) {
+      var _this3 = this;
+
+      if (confirm('리스트를 삭제 하시겠습니까?')) {
+        var post = {
+          'uid': this.uid,
+          'index': index
+        };
+        fetch('/api/todoDelete', {
+          headers: {
+            'content-type': 'application/json',
+            'accept': 'application/json'
+          },
+          method: 'post',
+          body: JSON.stringify(post)
+        }).then(function (response) {
+          if (response.ok) {
+            _this3.$emit('listupdate');
+          }
+        });
+      }
     }
   }
 });
@@ -6648,7 +6730,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".haeder[data-v-798ca618] {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0px;\n  width: 100%;\n  height: 50px;\n  box-shadow: 0 -5px 20px 5px rgba(0, 0, 0, 0.3);\n  text-align: center;\n  font-family: \"Nanum Gothic\", sans-serif;\n}\n.haeder div[data-v-798ca618] {\n  position: absolute;\n  display: inline-block;\n}\n.haeder .title[data-v-798ca618] {\n  text-transform: uppercase;\n  left: 50%;\n  top: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n  font-weight: 900;\n  font-size: 20px;\n  color: #6574cd;\n}", ""]);
+exports.push([module.i, ".haeder[data-v-798ca618] {\n  position: -webkit-sticky;\n  position: sticky;\n  top: 0px;\n  width: 100%;\n  height: 50px;\n  box-shadow: 0 -5px 5px 5px rgba(0, 0, 0, 0.1);\n  text-align: center;\n  font-family: \"Nanum Gothic\", sans-serif;\n}\n.haeder div[data-v-798ca618] {\n  position: absolute;\n  display: inline-block;\n}\n.haeder .title[data-v-798ca618] {\n  text-transform: uppercase;\n  left: 50%;\n  top: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n  font-weight: 900;\n  font-size: 20px;\n  color: #6574cd;\n}", ""]);
 
 // exports
 
@@ -6667,7 +6749,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".box[data-v-229db52f] {\n  display: flex;\n  justify-content: center;\n}\n.content[data-v-229db52f] {\n  width: 600px;\n  border: none;\n  margin: 10px 0;\n}\n.content .done[data-v-229db52f] {\n  background-color: rgba(0, 0, 0, 0.3);\n}\n.content .stay[data-v-229db52f] {\n  background-color: white;\n}\n.content .item[data-v-229db52f] {\n  height: 200px;\n  border-radius: 0.5em;\n  margin: 5px 0;\n  padding: 10px;\n  box-sizing: border-box;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f], .content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  all: unset;\n  font-family: sans-serif;\n  color: #434343;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f] {\n  display: inline-block;\n}\n.content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  display: block;\n}\n.content .item .title[data-v-229db52f] {\n  font-size: 17px;\n  font-weight: 700;\n  min-width: 390px;\n  color: #3490dc;\n}\n.content .item .udate[data-v-229db52f] {\n  font-size: 15px;\n  font-weight: 700;\n  text-align: right;\n  min-width: 170px;\n}\n.content .item .update[data-v-229db52f] {\n  font-size: 12px;\n  text-align: right;\n  margin: 5px;\n}\n.content .item .body[data-v-229db52f] {\n  font-size: 15px;\n  text-align: left;\n  word-wrap: break-word;\n  min-height: 110px;\n}\n.content .item .input-group[data-v-229db52f] {\n  display: block;\n  text-align: right;\n}\n.content .item .input-group button[data-v-229db52f] {\n  font-size: 20px;\n  display: inline-block;\n  margin-left: 10px;\n  outline: none;\n  transition: -webkit-transform 0.1s;\n  transition: transform 0.1s;\n  transition: transform 0.1s, -webkit-transform 0.1s;\n}\n.content .item .input-group button[data-v-229db52f] :hover {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n.content .item .input-group button[data-v-229db52f] :active {\n  -webkit-transform: scale(1);\n          transform: scale(1);\n}\n.content .item .input-group .clear[data-v-229db52f] {\n  color: #3490dc;\n}\n.content .item .input-group .hold[data-v-229db52f] {\n  color: rgba(34, 139, 34, 0.5);\n}\n.content .item .input-group .updated[data-v-229db52f] {\n  color: rgba(210, 105, 30, 0.5);\n}\n.content .item .input-group .delete[data-v-229db52f] {\n  color: rgba(255, 0, 0, 0.5);\n}", ""]);
+exports.push([module.i, ".box[data-v-229db52f] {\n  display: flex;\n  justify-content: center;\n}\n.content[data-v-229db52f] {\n  width: 600px;\n  border: none;\n  margin: 10px 0;\n}\n.content .done[data-v-229db52f] {\n  background-color: rgba(0, 0, 0, 0.3);\n}\n.content .stay[data-v-229db52f] {\n  background-color: white;\n}\n.content .item[data-v-229db52f] {\n  height: 200px;\n  border-radius: 0.5em;\n  margin: 5px 0;\n  padding: 10px;\n  box-sizing: border-box;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f], .content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  all: unset;\n  font-family: sans-serif;\n  color: #434343;\n}\n.content .item .title[data-v-229db52f], .content .item .udate[data-v-229db52f] {\n  display: inline-block;\n}\n.content .item .update[data-v-229db52f], .content .item .body[data-v-229db52f] {\n  display: block;\n}\n.content .item .title[data-v-229db52f] {\n  font-size: 17px;\n  font-weight: 700;\n  min-width: 390px;\n  color: #3490dc;\n}\n.content .item .udate[data-v-229db52f] {\n  font-size: 15px;\n  font-weight: 700;\n  text-align: right;\n  min-width: 170px;\n}\n.content .item .update[data-v-229db52f] {\n  font-size: 12px;\n  text-align: right;\n  margin: 5px;\n}\n.content .item .body[data-v-229db52f] {\n  font-size: 15px;\n  text-align: left;\n  word-wrap: break-word;\n  min-height: 110px;\n}\n.content .item .input-group[data-v-229db52f] {\n  display: block;\n  text-align: right;\n}\n.content .item .input-group button[data-v-229db52f] {\n  font-size: 20px;\n  display: inline-block;\n  margin-left: 10px;\n  outline: none;\n  transition: -webkit-transform 0.1s;\n  transition: transform 0.1s;\n  transition: transform 0.1s, -webkit-transform 0.1s;\n  padding: 5px;\n}\n.content .item .input-group button[data-v-229db52f] :hover {\n  -webkit-transform: scale(1.2);\n          transform: scale(1.2);\n}\n.content .item .input-group button[data-v-229db52f] :active {\n  -webkit-transform: scale(1);\n          transform: scale(1);\n}\n.content .item .input-group .clear[data-v-229db52f] {\n  color: #3490dc;\n}\n.content .item .input-group .hold[data-v-229db52f] {\n  color: rgba(34, 139, 34, 0.5);\n}\n.content .item .input-group .updated[data-v-229db52f] {\n  color: rgba(210, 105, 30, 0.5);\n}\n.content .item .input-group .delete[data-v-229db52f] {\n  color: rgba(255, 0, 0, 0.5);\n}", ""]);
 
 // exports
 
@@ -6686,7 +6768,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css?family=Nanum+Gothic);", ""]);
 
 // module
-exports.push([module.i, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline;\n}\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block;\n}\nbody {\n  line-height: 1;\n}\nol, ul {\n  list-style: none;\n}\nblockquote, q {\n  quotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: \"\";\n  content: none;\n}\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n.button {\n  cursor: pointer;\n}\n.con-shadow {\n  box-shadow: 0px 0px 5px 0.2px #999;\n}\n.input-shadow {\n  box-shadow: 0 0px 3px 1px #ccc;\n}", ""]);
+exports.push([module.i, "/* http://meyerweb.com/eric/tools/css/reset/ \n   v2.0 | 20110126\n   License: none (public domain)\n*/\nhtml, body, div, span, applet, object, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, acronym, address, big, cite, code,\ndel, dfn, em, img, ins, kbd, q, s, samp,\nsmall, strike, strong, sub, sup, tt, var,\nb, u, i, center,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details, embed,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, ruby, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline;\n}\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block;\n}\nbody {\n  line-height: 1;\n}\nol, ul {\n  list-style: none;\n}\nblockquote, q {\n  quotes: none;\n}\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: \"\";\n  content: none;\n}\ntable {\n  border-collapse: collapse;\n  border-spacing: 0;\n}\n.button {\n  cursor: pointer;\n}\n.con-shadow {\n  box-shadow: 0px 0px 5px 0.2px rgba(0, 0, 0, 0.2);\n}\n.input-shadow {\n  box-shadow: 0 0px 3px 1px rgba(0, 0, 0, 0.1);\n}", ""]);
 
 // exports
 
@@ -59067,14 +59149,29 @@ var render = function() {
             _c("label", [_vm._v("title")]),
             _vm._v(" "),
             _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.title,
+                  expression: "title"
+                }
+              ],
               staticClass: "todolist-title",
               attrs: { name: "title", id: "title", type: "text" },
+              domProps: { value: _vm.title },
               on: {
                 focus: function($event) {
                   return _vm.titleFocus()
                 },
                 blur: function($event) {
                   return _vm.titleFocusout()
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.title = $event.target.value
                 }
               }
             })
@@ -59084,8 +59181,17 @@ var render = function() {
             _c("label", [_vm._v("text")]),
             _vm._v(" "),
             _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.body,
+                  expression: "body"
+                }
+              ],
               staticClass: "todolist-text",
               attrs: { name: "body" },
+              domProps: { value: _vm.body },
               on: {
                 focus: function($event) {
                   return _vm.textFocus()
@@ -59093,9 +59199,17 @@ var render = function() {
                 blur: function($event) {
                   return _vm.textFocusout()
                 },
-                input: function($event) {
-                  return _vm.textInput()
-                }
+                input: [
+                  function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.body = $event.target.value
+                  },
+                  function($event) {
+                    return _vm.textInput()
+                  }
+                ]
               }
             })
           ]),
@@ -59249,9 +59363,36 @@ var render = function() {
                   )
                 : _vm._e(),
               _vm._v(" "),
-              _vm._m(0, true),
+              _c(
+                "button",
+                {
+                  staticClass: "updated",
+                  on: {
+                    click: function($event) {
+                      return _vm.todoUpdate(
+                        item.id,
+                        item.title,
+                        item.body,
+                        item.udate
+                      )
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-pen" })]
+              ),
               _vm._v(" "),
-              _vm._m(1, true)
+              _c(
+                "button",
+                {
+                  staticClass: "delete",
+                  on: {
+                    click: function($event) {
+                      return _vm.todoDelete(item.id)
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-trash-alt" })]
+              )
             ])
           ]
         )
@@ -59260,24 +59401,7 @@ var render = function() {
     )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "updated" }, [
-      _c("i", { staticClass: "fas fa-pen" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("button", { staticClass: "delete" }, [
-      _c("i", { staticClass: "fas fa-trash-alt" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -100189,11 +100313,12 @@ module.exports = function(module) {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no exports provided */
+/*! exports provided: eventBus */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "eventBus", function() { return eventBus; });
 /* harmony import */ var _bootstrap__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 /* harmony import */ var _bootstrap__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_bootstrap__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -100222,6 +100347,13 @@ $.extend(true, jQuery.fn.datetimepicker.defaults, {
     today: 'fas fa-calendar-check',
     clear: 'far fa-trash-alt',
     close: 'far fa-times-circle'
+  }
+});
+var eventBus = new vue__WEBPACK_IMPORTED_MODULE_1___default.a({
+  methods: {
+    listUpdate: function listUpdate(index, title, body, udate) {
+      this.$emit('listUpdate', index, title, body, udate);
+    }
   }
 });
 var app = new vue__WEBPACK_IMPORTED_MODULE_1___default.a({
