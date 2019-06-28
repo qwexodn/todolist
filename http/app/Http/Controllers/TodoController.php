@@ -73,6 +73,7 @@ class TodoController extends Controller
         $res = $db->select('id', 'title', 'body', 'udate', 'state', 'created_at as update')
                     ->where('uid', $uid)
                     ->where('state', '!=', 'cancel')
+                    ->orderBy('udate', 'asc')
                     ->get();
         if($res)  return $res;
     }

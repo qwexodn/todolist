@@ -1,7 +1,12 @@
 <template>
 <div class='box'>
     <div class='content'>
-        <div class='item con-shadow' :class="{'done':item.state === 'clear', 'stay':item.state === 'stay'}" v-for="item in todos" :key='item.id'>
+        <div class='item con-shadow'
+            :class="{'done':item.state === 'clear', 'stay':item.state === 'stay'}" 
+            v-for="item in todos" 
+            v-if=" show === item.state || show === 'all'"
+            :key='item.id' 
+        >
             <div class='title'>{{ item.title }}</div>
             <div class='udate'>{{ item.udate }}</div>
             <div class='update'>작성일 : {{ item.update }}</div>
@@ -21,7 +26,7 @@
 import { eventBus } from '../app';
 
 export default {
-    props:['todos', 'uid'],
+    props:['todos', 'uid', 'show'],
     data(){
         return{
             
@@ -99,8 +104,12 @@ export default {
 @import '../../sass/_variables.scss';
 
 .box{
-    display: flex;
-    justify-content: center;
+    
+    display: inline-block;
+    position:absolute;
+    left:50%;
+    transform: translateX(-50%);
+        z-index:-1;
 }
 .content{
     width:600px;
@@ -121,6 +130,7 @@ export default {
         margin:5px 0;
         padding:10px;
         box-sizing:border-box;
+        position:relative;
 
         .title, .udate, .update, .body{
             all:unset;
@@ -159,7 +169,10 @@ export default {
 
         .input-group{
             display: block;
-            text-align:right;
+            position:absolute;
+            text-align: right;
+            right:10px;
+            bottom:10px;
 
             button{
                 font-size:20px;
@@ -169,12 +182,14 @@ export default {
                 transition:transform 0.1s;
                 padding:5px;
 
-                :hover{
+                
+            }
+
+            button:hover{
                     transform:scale(1.2);
-                }
-                :active{
-                    transform:scale(1);
-                }
+            }
+            button:active{
+                transform:scale(1);
             }
 
             .clear{
@@ -188,6 +203,29 @@ export default {
             }
             .delete{
                 color:rgba($color: #FF0000, $alpha: 0.5);
+            }
+        }
+    }
+}
+
+@media (max-width: 1400px) {
+    .box{
+        margin-left:150px;
+    }
+}
+@media (max-width:950px){
+    .box{
+        margin-left:0px;
+    }
+}
+
+@media (max-width:700px){
+    .box{
+        .content{
+            width:400px;
+
+            .title, .udate{
+                display:block;
             }
         }
     }

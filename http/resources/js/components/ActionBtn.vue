@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class='action-btn button' @click="actionToggle()"><i class="fas fa-pen-alt"></i></div>
+        <div class='action-btn button action-btn-show' @click="actionToggle()"><i class="fas fa-pen-alt"></i></div>
         <div class='todolist-edit edit-hide con-shadow'>
             <div class='cancel-btn input-shadow button' @click="cancelClick()"><i class="fas fa-times"></i></div>
             <div class='edit-container'>
@@ -92,6 +92,7 @@ export default {
             let title = document.querySelector('.todolist-title')
             let txt = document.querySelector('.todolist-text')
             let list = document.querySelector('.todolist-edit')
+            let actionBtn = document.querySelector('.action-btn');
 
             this.date = `${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`;
             this.inputCnt = 0;
@@ -106,16 +107,24 @@ export default {
 
             list.classList.remove('edit-show');
             list.classList.add('edit-hide');
+            
+            actionBtn.classList.add('action-btn-show');
+            actionBtn.classList.remove('action-btn-hide');
         },
         actionToggle(){
             let list = document.querySelector('.todolist-edit');
+            let actionBtn = document.querySelector('.action-btn');
 
             if(list.className.split(' ').indexOf('edit-show') == -1){
                 list.classList.add("edit-show");
                 list.classList.remove("edit-hide");
+                actionBtn.classList.add('action-btn-hide');
+                actionBtn.classList.remove('action-btn-show');
             }else{
                 list.classList.remove('edit-show');
                 list.classList.add("edit-hide");
+                actionBtn.classList.add('action-btn-show');
+                actionBtn.classList.remove('action-btn-hide');
             }
         },
         listAdd(){
@@ -307,6 +316,13 @@ button:active{
     font-size:22px;
     color:rgba($color: #000000, $alpha: 0.6);
     z-index:1;
+    transition: transform 0.5s;
+}
+.action-btn-show{
+    transform: translateX(0%);
+}
+.action-btn-hide{
+    transform: translateX(900%);
 }
 
 
@@ -337,6 +353,7 @@ button:active{
     background-color: white;
     border-radius: 0.5em;
     transition: bottom 0.3s;
+    text-align:center;
 
     .cancel-btn{
         position: absolute;
@@ -358,10 +375,12 @@ button:active{
     }
 
     .edit-container{
+        display:inline-block;
         width: 400px;
         height:370px;
-        margin: 15px 50px;
+        margin-top:13px;
         font-family: sans-serif;
+        text-align:left;
 
         textarea, input[type=text]{
             border:none;
@@ -387,6 +406,17 @@ button:active{
             font-size:14px;
             color:#797979;
         }
+    }
+}
+
+@media (max-width:670px){
+    .todolist-edit{
+        width:450px;
+    }
+}
+@media (max-width:515px){
+    .todolist-edit{
+        width:430px;
     }
 }
 

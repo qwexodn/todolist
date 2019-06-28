@@ -1,10 +1,9 @@
 <template>
-    <v-layout row wrap>
+    <v-layout wrap>
         <v-flex xs12>
-            <Header></Header>
-        </v-flex>
-        <v-flex xs12>
-            <TodoList :todos='todos' :uid='uid' @listupdate='getList'></TodoList>
+            <Header @menuShow='menuShow()'></Header>
+            <Lmenu :todos='todos' :menushow='menushow' @showList='showList' @menuHide='menuHide'></Lmenu>
+            <TodoList :todos='todos' :uid='uid' :show='listshow' @listupdate='getList'></TodoList>
         </v-flex>
         <ActionBtn :uid='uid' @listUpdate='getList'></ActionBtn>
     </v-layout>
@@ -13,20 +12,30 @@
 import Header from "../components/header";
 import TodoList from '../components/todolist';
 import ActionBtn from "../components/actionbtn";
+import Lmenu from '../components/Lmenu';
 
 export default {
     created(){
         this.getUserId();
+
+        window.addEventListener('resize', ()=>{
+            if(event.currentTarget.innerWidth > 950){
+                this.menushow = false;
+            }
+        })
     },
     components:{
         Header,
         TodoList,
         ActionBtn,
+        Lmenu,
     },
     data(){
         return{
             uid:0,
             todos:[],
+            listshow:'all',
+            menushow:false,
         }
     },
     methods:{
@@ -69,7 +78,17 @@ export default {
             }).then((data)=>{
                 this.todos = data;
             });
+        },
+        showList(state){
+            this.listshow = state;
+        },
+        menuShow(){
+            if(this.menushow)  this.menushow = false;
+            else  this.menushow = true;
+        },
+        menuHide(){
+            this.menushow = false;
         }
-    }
+    },
 }
 </script>
