@@ -102,7 +102,6 @@ export default {
                 this.todos = data;
                 this.loading = false;
                 this.subLoadingHide();
-                console.log(this.subLoading);
             });
         },
         showList(state){

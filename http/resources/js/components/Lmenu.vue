@@ -38,25 +38,26 @@ export default {
         },
         menuHide(){
             this.$emit('menuHide');
+        },
+        menuLoad(){
+            console.log('aa');
+            let smoke = document.querySelector('.smoke');
+
+            smoke.style['width'] = `${event.currentTarget.innerWidth}px`;
+            smoke.style['height'] = `${event.currentTarget.innerHeight}px`;
         }
     },
     mounted(){
         let smoke = document.querySelector('.smoke');
 
-        window.addEventListener('load', ()=>{
-            let smoke = document.querySelector('.smoke');
-
-            smoke.style['width'] = `${event.currentTarget.innerWidth}px`;
-            smoke.style['height'] = `${event.currentTarget.innerHeight}px`;
-            console.log(event);
-        });
+        smoke.style['width'] = '300%';
+        smoke.style['height'] = '100vh';
 
         window.addEventListener('resize', ()=>{
             let smoke = document.querySelector('.smoke');
 
             smoke.style['width'] = `${event.currentTarget.innerWidth}px`;
             smoke.style['height'] = `${event.currentTarget.innerHeight}px`;
-            console.log(smoke.style['height']);
         });
     },
 }
@@ -112,7 +113,7 @@ export default {
             background-color:rgba($color:#A9F5F2, $alpha:0.1);
         }
         li:active{
-            transform:scale(0.95);
+            transform:scale(0.98);
         }
     }
 

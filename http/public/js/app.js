@@ -1800,21 +1800,22 @@ __webpack_require__.r(__webpack_exports__);
     },
     menuHide: function menuHide() {
       this.$emit('menuHide');
+    },
+    menuLoad: function menuLoad() {
+      console.log('aa');
+      var smoke = document.querySelector('.smoke');
+      smoke.style['width'] = "".concat(event.currentTarget.innerWidth, "px");
+      smoke.style['height'] = "".concat(event.currentTarget.innerHeight, "px");
     }
   },
   mounted: function mounted() {
     var smoke = document.querySelector('.smoke');
-    window.addEventListener('load', function () {
-      var smoke = document.querySelector('.smoke');
-      smoke.style['width'] = "".concat(event.currentTarget.innerWidth, "px");
-      smoke.style['height'] = "".concat(event.currentTarget.innerHeight, "px");
-      console.log(event);
-    });
+    smoke.style['width'] = '300%';
+    smoke.style['height'] = '100vh';
     window.addEventListener('resize', function () {
       var smoke = document.querySelector('.smoke');
       smoke.style['width'] = "".concat(event.currentTarget.innerWidth, "px");
       smoke.style['height'] = "".concat(event.currentTarget.innerHeight, "px");
-      console.log(smoke.style['height']);
     });
   }
 });
@@ -2338,8 +2339,6 @@ __webpack_require__.r(__webpack_exports__);
         _this3.loading = false;
 
         _this3.subLoadingHide();
-
-        console.log(_this3.subLoading);
       });
     },
     showList: function showList(state) {
@@ -6849,7 +6848,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".menu-show[data-v-3b389af0] {\n  -webkit-transform: translateX(100%);\n          transform: translateX(100%);\n}\n.menu-hide[data-v-3b389af0] {\n  -webkit-transform: translateX(0%);\n          transform: translateX(0%);\n}\n.content[data-v-3b389af0] {\n  display: inline-block;\n  width: 300px;\n  height: 100vh;\n  position: fixed;\n  top: 51px;\n  left: 0px;\n  border-right: 1px solid rgba(0, 0, 0, 0.1);\n  background-color: white;\n}\n.content .menu li[data-v-3b389af0] {\n  position: relative;\n  padding: 15px 10px;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  vertical-align: middle;\n  cursor: pointer;\n  transition: -webkit-transform 0.3s;\n  transition: transform 0.3s;\n  transition: transform 0.3s, -webkit-transform 0.3s;\n}\n.content .menu li span[data-v-3b389af0] {\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  display: inline-block;\n  width: 40px;\n  height: 30px;\n  line-height: 30px;\n  border-radius: 50%;\n  text-align: center;\n  -webkit-transform: translateY(-50%);\n          transform: translateY(-50%);\n  background-color: rgba(0, 64, 255, 0.1);\n  color: #797979;\n}\n.content .menu li[data-v-3b389af0]:hover {\n  background-color: rgba(169, 245, 242, 0.1);\n}\n.content .menu li[data-v-3b389af0]:active {\n  -webkit-transform: scale(0.95);\n          transform: scale(0.95);\n}\n.content .smoke[data-v-3b389af0] {\n  position: absolute;\n  left: 300px;\n  top: 0px;\n  background-color: rgba(0, 0, 0, 0.3);\n  z-index: 999;\n}\n.content .smoke-show[data-v-3b389af0] {\n  visibility: visible;\n}\n.content .smoke-hide[data-v-3b389af0] {\n  visibility: hidden;\n}\n@media (max-width: 950px) {\n.content[data-v-3b389af0] {\n    left: -300px;\n    transition: -webkit-transform 0.5s;\n    transition: transform 0.5s;\n    transition: transform 0.5s, -webkit-transform 0.5s;\n}\n}", ""]);
+exports.push([module.i, ".menu-show[data-v-3b389af0] {\n  -webkit-transform: translateX(100%);\n          transform: translateX(100%);\n}\n.menu-hide[data-v-3b389af0] {\n  -webkit-transform: translateX(0%);\n          transform: translateX(0%);\n}\n.content[data-v-3b389af0] {\n  display: inline-block;\n  width: 300px;\n  height: 100vh;\n  position: fixed;\n  top: 51px;\n  left: 0px;\n  border-right: 1px solid rgba(0, 0, 0, 0.1);\n  background-color: white;\n}\n.content .menu li[data-v-3b389af0] {\n  position: relative;\n  padding: 15px 10px;\n  border-bottom: 1px solid rgba(0, 0, 0, 0.1);\n  vertical-align: middle;\n  cursor: pointer;\n  transition: -webkit-transform 0.3s;\n  transition: transform 0.3s;\n  transition: transform 0.3s, -webkit-transform 0.3s;\n}\n.content .menu li span[data-v-3b389af0] {\n  position: absolute;\n  right: 10px;\n  top: 50%;\n  display: inline-block;\n  width: 40px;\n  height: 30px;\n  line-height: 30px;\n  border-radius: 50%;\n  text-align: center;\n  -webkit-transform: translateY(-50%);\n          transform: translateY(-50%);\n  background-color: rgba(0, 64, 255, 0.1);\n  color: #797979;\n}\n.content .menu li[data-v-3b389af0]:hover {\n  background-color: rgba(169, 245, 242, 0.1);\n}\n.content .menu li[data-v-3b389af0]:active {\n  -webkit-transform: scale(0.98);\n          transform: scale(0.98);\n}\n.content .smoke[data-v-3b389af0] {\n  position: absolute;\n  left: 300px;\n  top: 0px;\n  background-color: rgba(0, 0, 0, 0.3);\n  z-index: 999;\n}\n.content .smoke-show[data-v-3b389af0] {\n  visibility: visible;\n}\n.content .smoke-hide[data-v-3b389af0] {\n  visibility: hidden;\n}\n@media (max-width: 950px) {\n.content[data-v-3b389af0] {\n    left: -300px;\n    transition: -webkit-transform 0.5s;\n    transition: transform 0.5s;\n    transition: transform 0.5s, -webkit-transform 0.5s;\n}\n}", ""]);
 
 // exports
 
