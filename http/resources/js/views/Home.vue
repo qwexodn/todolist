@@ -1,7 +1,8 @@
 <template>
     <v-layout wrap>
-        <v-flex xs12>
-            <Header @menuShow='menuShow()'></Header>
+        <MainLoading v-if="loading"></MainLoading>
+        <v-flex xs12 v-else>
+            <Header :userIp='userIp' @menuShow='menuShow()'></Header>
             <Lmenu :todos='todos' :menushow='menushow' @showList='showList' @menuHide='menuHide'></Lmenu>
             <TodoList :todos='todos' :uid='uid' :show='listshow' @listupdate='getList'></TodoList>
         </v-flex>
@@ -13,22 +14,38 @@ import Header from "../components/header";
 import TodoList from '../components/todolist';
 import ActionBtn from "../components/actionbtn";
 import Lmenu from '../components/Lmenu';
+import MainLoading from '../components/MainLoading';
 
 export default {
     created(){
-        this.getUserId();
 
+        //모바일 크기를 벗어나면 메뉴 초기화
         window.addEventListener('resize', ()=>{
             if(event.currentTarget.innerWidth > 950){
                 this.menushow = false;
             }
         })
+
+        // 유저 아이피 get
+        fetch('/api/userIp')
+        .then( response => {
+            if(response.ok){
+                return response.text();
+            }
+        })
+        .then( data => {
+            this.userIp = data;
+        });
+
+        // 유저 아이디 get
+        this.getUserId();
     },
     components:{
         Header,
         TodoList,
         ActionBtn,
         Lmenu,
+        MainLoading,
     },
     data(){
         return{
@@ -36,6 +53,8 @@ export default {
             todos:[],
             listshow:'all',
             menushow:false,
+            loading:true,
+            userIp:null,
         }
     },
     methods:{
@@ -77,6 +96,7 @@ export default {
                 }
             }).then((data)=>{
                 this.todos = data;
+                this.loading = false;
             });
         },
         showList(state){

@@ -70,4 +70,11 @@ class UserController extends Controller
             $_SESSION['uid'] = $row->id;
         }
     }
+
+    /**
+     * 유저의 아이피 뿌리기
+     */
+    function getUserIp(){
+        return $_SERVER['REMOTE_ADDR'];
+    }
 }
