@@ -131,6 +131,8 @@ export default {
             let form = document.fm;
             let list = document.querySelector('.todolist-edit');
 
+            this.$emit('subLoadingShow');
+
             if(this.index == 0){
                 let post = {
                     title:form.title.value,
@@ -146,14 +148,12 @@ export default {
                         'Content-Type':'application/json',
                         'Accept':'application/json',
                     }
-                }).then(function(response){
+                }).then((response)=>{
                     if(response.ok){
-                        alert('리스트가 등록 되었습니다.');
-
                         list.classList.remove('edit-show');
                         list.classList.add("edit-hide");
-                        this.title = null;
-                        this.body = null;
+                        this.title = '';
+                        this.body = '';
                         this.udate = `${date.getFullYear()}-${lpad(date.getMonth()+1, 2, '0')}-${date.getDate()}`;
                         this.index = 0;
 
@@ -182,8 +182,6 @@ export default {
                     }
                 }).then((response) => {
                     if(response.ok){
-                        alert('리스트가 수정 되었습니다.');
-
                         list.classList.remove('edit-show');
                         list.classList.add("edit-hide");
                         this.title = null;

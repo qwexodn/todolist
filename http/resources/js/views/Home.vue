@@ -1,12 +1,13 @@
 <template>
     <v-layout wrap>
+        <Loading v-if='subLoading'></Loading>
         <MainLoading v-if="loading"></MainLoading>
         <v-flex xs12 v-else>
             <Header :userIp='userIp' @menuShow='menuShow()'></Header>
             <Lmenu :todos='todos' :menushow='menushow' @showList='showList' @menuHide='menuHide'></Lmenu>
             <TodoList :todos='todos' :uid='uid' :show='listshow' @listupdate='getList'></TodoList>
         </v-flex>
-        <ActionBtn :uid='uid' @listUpdate='getList'></ActionBtn>
+        <ActionBtn :uid='uid' @listUpdate='getList' @subLoadingShow='subLoadingShow'></ActionBtn>
     </v-layout>
 </template>
 <script>
@@ -15,6 +16,7 @@ import TodoList from '../components/todolist';
 import ActionBtn from "../components/actionbtn";
 import Lmenu from '../components/Lmenu';
 import MainLoading from '../components/MainLoading';
+import Loading from '../components/Loading';
 
 export default {
     created(){
@@ -46,6 +48,7 @@ export default {
         ActionBtn,
         Lmenu,
         MainLoading,
+        Loading,
     },
     data(){
         return{
@@ -55,6 +58,7 @@ export default {
             menushow:false,
             loading:true,
             userIp:null,
+            subLoading:false,
         }
     },
     methods:{
@@ -97,10 +101,18 @@ export default {
             }).then((data)=>{
                 this.todos = data;
                 this.loading = false;
+                this.subLoadingHide();
+                console.log(this.subLoading);
             });
         },
         showList(state){
             this.listshow = state;
+        },
+        subLoadingShow(){
+            this.subLoading = true;
+        },
+        subLoadingHide(){
+            this.subLoading = false;
         },
         menuShow(){
             if(this.menushow)  this.menushow = false;
