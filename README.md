@@ -1,2 +1,2 @@
 # todolist
-todolist vue + vuetify + laravel
+todolist vue + vueroute + laravel
