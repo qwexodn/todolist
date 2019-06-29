@@ -1,9 +1,15 @@
 
+//IE에서 사용할 때 필수로 적용
+import 'es6-promise/auto'
+import 'babel-polyfill'
+import 'whatwg-fetch'
 
 import './bootstrap';
 import Vue from 'vue';
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+
+
 
 import Router from './routes/route';
 
